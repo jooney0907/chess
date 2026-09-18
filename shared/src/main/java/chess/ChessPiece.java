@@ -56,28 +56,17 @@ public class ChessPiece {
         Rule rule = switch (getPieceType()) {
             case BISHOP -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
             case ROOK   -> new Rule(true, new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}, {-2,-1}});
-            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1},{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
-            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
+            case KNIGHT -> new Rule(false, new int[][]{{2, 1}, {2, -1}, {-2, 1}, {-2,-1},
+                    {1,2},{1,-2},{-1,2},{-1,-2}});
+            case QUEEN  -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1},
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}});
+            case KING   -> new Rule(false, new int[][]{{1, -1}, {-1, 1}, {-1, -1},
+                    {1, 1},{1,0},{0,1},{-1,0},{0,-1}});
             default -> null;
         };
 
         return rule.getMoves(board, myPosition);
-    }
-    public class Rules {
-        private final HashMap<PieceType, MovementRule> rules = new HashMap<>();
-
-        public Rules() {
-            rules.put(PieceType.KING, new KingMovementRule());
-            rules.put(PieceType.QUEEN, new QueenMovementRule());
-            rules.put(PieceType.KNIGHT, new KnightMovementRule());
-            rules.put(PieceType.BISHOP, new BishopMovementRule());
-            rules.put(PieceType.ROOK, new RookMovementRule());
-            rules.put(PieceType.PAWN, new PawnMovementRule());
         }
 
-        public MovementRule pieceRule(PieceType type) {
-            return rules.get(type);
-        }
-        }
+
     }
