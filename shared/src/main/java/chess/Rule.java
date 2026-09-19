@@ -33,11 +33,10 @@ public class Rule {
                     }
                     else{
                     ChessMove move = new ChessMove(position, newPosition,null);
+                    moves.add(move);
                     break;
+                        }
                     }
-                    }
-                {
-                }
                 newRow += rowChange;
                 newColumn += columnChange;
             }
