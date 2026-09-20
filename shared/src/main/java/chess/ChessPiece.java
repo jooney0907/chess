@@ -53,6 +53,9 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
+        if (getPieceType() == PieceType.PAWN) {
+            return pawnMove(board, myPosition);
+        }
         Rule rule = switch (getPieceType()) {
             case BISHOP -> new Rule(true, new int[][]{{1, -1}, {-1, 1}, {-1, -1}, {1, 1}});
             case ROOK   -> new Rule(true, new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}});
@@ -67,6 +70,31 @@ public class ChessPiece {
 
         return rule.getMoves(board, myPosition);
         }
+
+    private Collection<ChessMove> pawnMove(ChessBoard board, ChessPosition position) {
+    Collection<ChessMove> moves = new HashSet<>();
+    int direc;
+
+    if(pieceColor == ChessGame.TeamColor.WHITE){
+        direc = 1;
+    } else{
+        direc = -1;
+    }
+    ChessPosition forward = new ChessPosition(position.getRow() + direc, position.getColumn());
+    if(board.getPiece(forward) == null){
+        ChessMove move = new ChessMove(position, forward, null);
+        moves.add(move);
+    }
+    if ((pieceColor== ChessGame.TeamColor.WHITE && position.getRow() == 2) ||
+    pieceColor== ChessGame.TeamColor.BLACK && position.getRow() == 7){
+        ChessPosition goTwo = new ChessPosition(position.getRow() + (2*direc), position.getColumn());
+        if(board.getPiece(forward) == null && board.getPiece(goTwo) == null){
+            ChessMove move = new ChessMove(position, goTwo, null);
+            moves.add(move);
+        }
+    }
+    return moves;
+}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
