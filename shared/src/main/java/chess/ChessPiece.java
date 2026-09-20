@@ -74,7 +74,6 @@ public class ChessPiece {
     private Collection<ChessMove> pawnMove(ChessBoard board, ChessPosition position) {
     Collection<ChessMove> moves = new HashSet<>();
     int direc;
-
     if(pieceColor == ChessGame.TeamColor.WHITE){
         direc = 1;
     } else{
@@ -86,11 +85,25 @@ public class ChessPiece {
         moves.add(move);
     }
     if ((pieceColor== ChessGame.TeamColor.WHITE && position.getRow() == 2) ||
-    pieceColor== ChessGame.TeamColor.BLACK && position.getRow() == 7){
-        ChessPosition goTwo = new ChessPosition(position.getRow() + (2*direc), position.getColumn());
-        if(board.getPiece(forward) == null && board.getPiece(goTwo) == null){
+    pieceColor== ChessGame.TeamColor.BLACK && position.getRow() == 7) {
+        ChessPosition goTwo = new ChessPosition(position.getRow() + (2 * direc), position.getColumn());
+        if (board.getPiece(forward) == null && board.getPiece(goTwo) == null) {
             ChessMove move = new ChessMove(position, goTwo, null);
             moves.add(move);
+        }
+    }
+    if(position.getColumn() > 1) {
+        ChessPosition leftCapture = new ChessPosition(position.getRow() + direc, position.getColumn() - 1);
+        ChessPiece leftPiece = board.getPiece(leftCapture);
+        if (leftPiece != null && leftPiece.getTeamColor() != pieceColor) {
+            moves.add(new ChessMove(position, leftCapture, null));
+        }
+    }
+    if(position.getColumn() < 8) {
+        ChessPosition rightCapture = new ChessPosition(position.getRow() + direc, position.getColumn() + 1);
+        ChessPiece rightPiece = board.getPiece(rightCapture);
+        if (rightPiece != null && rightPiece.getTeamColor() != pieceColor) {
+            moves.add(new ChessMove(position, rightCapture, null));
         }
     }
     return moves;
