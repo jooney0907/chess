@@ -37,6 +37,9 @@ public class Rule {
                     break;
                         }
                     }
+                if (!repeat){
+                    break;
+                }
                 newRow += rowChange;
                 newColumn += columnChange;
             }
