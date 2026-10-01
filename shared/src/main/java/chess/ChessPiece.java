@@ -52,7 +52,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece piece = board.getPiece(myPosition);
         if (getPieceType() == PieceType.PAWN) {
             return pawnMove(board, myPosition);
         }
