@@ -1,6 +1,8 @@
 package chess;
 
-import java.util.Collection;
+import com.sun.jdi.InvalidLineNumberException;
+
+import java.util.* ;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -49,7 +51,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        Collection<ChessMove> moves = new HashSet<>();
+        if(piece==null){
+            return null;
+        }
+        for(ChessMove move: piece.pieceMoves(board,startPosition)){
+            ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+            board.removePiece(startPosition);
+            board.addPiece(move.getEndPosition(),piece);
+            if(!isInCheck(piece.getTeamColor())){
+                moves.add(move);
+            }
+            board.addPiece(startPosition, piece);
+            board.addPiece(move.getEndPosition(),capturedPiece);
+        }
+            return moves;
     }
 
     /**
@@ -59,7 +76,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
