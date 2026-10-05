@@ -76,6 +76,16 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+        if(movingPiece==null){
+            throw new InvalidMoveException();
+        }
+        if(movingPiece.getTeamColor() != teamTurn){
+            throw new InvalidMoveException();
+        }
+        if(!validMoves(move.getStartPosition()).contains(move)){
+            throw new InvalidMoveException();
+        }
 
     }
 
@@ -167,7 +177,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
