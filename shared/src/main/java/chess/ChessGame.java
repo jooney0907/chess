@@ -86,7 +86,18 @@ public class ChessGame {
         if(!validMoves(move.getStartPosition()).contains(move)){
             throw new InvalidMoveException();
         }
-
+        board.removePiece(move.getStartPosition());
+        board.addPiece(move.getEndPosition(), movingPiece);
+        if(move.getPromotionPiece()!= null){
+            ChessPiece promoPiece = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
+            board.removePiece(move.getStartPosition());
+            board.addPiece(move.getEndPosition(), promoPiece);
+        }
+        if(teamTurn == TeamColor.WHITE){
+            setTeamTurn(TeamColor.BLACK);
+        }else{
+            setTeamTurn(TeamColor.WHITE);
+        }
     }
 
     /**
