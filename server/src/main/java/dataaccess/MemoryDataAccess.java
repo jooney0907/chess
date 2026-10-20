@@ -1,5 +1,5 @@
 package dataaccess;
-import model.UserData;
+import model. *;
 import java.util.*;
 
 public class MemoryDataAccess implements DataAccess{
@@ -7,11 +7,11 @@ public class MemoryDataAccess implements DataAccess{
 
     @Override
     public void register(UserData userData, AuthData authData){
-        users.put(userData.username(),);
+        users.put(userData.username(), userData);
     }
 
-    public void getUser(String userName){
-        return user.userName;
+    public UserData getUser(String userName){
+        return users.get(userName);
     }
 
     @Override
