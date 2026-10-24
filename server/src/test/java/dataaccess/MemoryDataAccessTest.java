@@ -17,7 +17,7 @@ public class MemoryDataAccessTest {
         da.clear();
         assertNull(da.getUser(user.username()));
     }
-
+    @Test
     void getUser(){
         var user = new UserData("cow", "cow@byu.edu", "moo");
         var da = new MemoryDataAccess();
