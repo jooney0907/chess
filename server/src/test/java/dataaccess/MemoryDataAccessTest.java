@@ -25,4 +25,9 @@ public class MemoryDataAccessTest {
         assertEquals(user, da.getUser(user.username()));
     }
 
+    @Test
+    void getUserNotFound() {
+        var da = new MemoryDataAccess();
+        assertNull(da.getUser("unknown"));
+    }
 }
