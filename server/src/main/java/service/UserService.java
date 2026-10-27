@@ -41,10 +41,12 @@ public class UserService {
         dataAccess.createAuth(authData);
         return new LoginResult(user.username(), authToken);}
 
-    public void logout(LogoutRequest logoutRequest) {
-        var user = dataAccess.
-        String authToken = UUID.randomUUID().toString();
-        var authData = new AuthData(authToken,)
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
+        var authData = dataAccess.getAuth(logoutRequest.authToken());
+        if(authData==null){
+            throw new IllegalStateException("401 Error");
+        }
+        dataAccess.deleteAuth(authData.authToken());
         }
 
 }
