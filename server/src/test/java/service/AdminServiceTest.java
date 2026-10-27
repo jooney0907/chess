@@ -19,4 +19,9 @@ public class AdminServiceTest {
     adminService.clear();
     assertNull(da.getUser(user.username()));
     }
+
+    @Test
+    void register() throws DataAccessException {
+    var da = new MemoryDataAccess();
+    }
 }

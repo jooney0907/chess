@@ -9,6 +9,7 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public void register(UserData userData, AuthData authData){
         users.put(userData.username(), userData);
+        auths.put(authData.authToken(), authData);
     }
     @Override
     public UserData getUser(String userName){
