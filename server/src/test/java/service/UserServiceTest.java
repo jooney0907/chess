@@ -102,4 +102,25 @@ public class UserServiceTest {
         assertEquals(loginRequest.username(),result.username());
         assertNotNull(result.authToken());
     }
+
+    @Test
+    void logoutWorks() throws DataAccessException{
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow", "moo", "cow@byu.edu");
+        var result = userService.register(request);
+        String authToken = result.authToken();
+        var logoutRequest = new LogoutRequest(authToken);
+        userService.logout(logoutRequest);
+        assertNull(da.getAuth(authToken));
+    }
+
+    @Test
+    void invalidToken() throws DataAccessException{
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var logoutRequest = new LogoutRequest("invalid");
+        assertThrows(IllegalStateException.class, () -> userService.logout(logoutRequest));
+    }
+
 }

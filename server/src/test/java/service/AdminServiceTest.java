@@ -20,8 +20,4 @@ public class AdminServiceTest {
     assertNull(da.getUser(user.username()));
     }
 
-    @Test
-    void register() throws DataAccessException {
-    var da = new MemoryDataAccess();
-    }
 }
