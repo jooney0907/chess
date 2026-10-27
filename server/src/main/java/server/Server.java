@@ -9,12 +9,13 @@ import dataaccess.*;
 public class Server {
 
     private final Javalin javalin;
+    private final AdminService adminService;
 
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         var da = new MemoryDataAccess();
-        var adminService = new AdminService(da);
+        adminService = new AdminService(da);
         var userService = new UserService(da);
         javalin.post("/user",this::register);
         javalin.delete("/db", this::clear);
@@ -29,8 +30,9 @@ public class Server {
         var serializer = new Gson();
     }
 
-    private void clear(Context context){
-
+    private void clear(Context context) throws DataAccessException {
+        adminService.clear();
+        context.result("{}");
     }
     private void login(Context context){
 
