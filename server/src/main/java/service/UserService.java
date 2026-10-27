@@ -40,6 +40,11 @@ public class UserService {
         var authData = new AuthData(authToken,user.username());
         dataAccess.createAuth(authData);
         return new LoginResult(user.username(), authToken);}
-    public void logout(LogoutRequest logoutRequest) {}
+
+    public void logout(LogoutRequest logoutRequest) {
+        var user = dataAccess.
+        String authToken = UUID.randomUUID().toString();
+        var authData = new AuthData(authToken,)
+        }
 
 }
