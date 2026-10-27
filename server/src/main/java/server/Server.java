@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import service.*;
 import io.javalin.*;
+import io.javalin.http.*;
 import model.*;
 import dataaccess.*;
 public class Server {
@@ -15,32 +16,36 @@ public class Server {
         var da = new MemoryDataAccess();
         var adminService = new AdminService(da);
         var userService = new UserService(da);
-        javalin.post("/user",ctx->ctx.result("{}"));
-        javalin.delete("/db", ctx -> {adminService.clear();ctx.result("{}");});
-
+        javalin.post("/user",this::register);
+        javalin.delete("/db", this::clear);
+        javalin.post("/session", this::login);
+        javalin.delete("/session", this::logout);
+        javalin.get("/game", this::listGames);
+        javalin.post("/game", this::createGame);
+        javalin.put("/game",this::joinGame);
     }
 
-    private void register(){
+    private void register(Context context){
         var serializer = new Gson();
     }
 
-    private void clear(){
+    private void clear(Context context){
 
     }
-    private void login(){
+    private void login(Context context){
 
     }
-    private void logout(){
+    private void logout(Context context){
 
     }
 
-    private void listGames(){
+    private void listGames(Context context){
 
     }
-    private void createGame(){
+    private void createGame(Context context){
 
     }
-    private void joinGame(){
+    private void joinGame(Context context){
 
     }
 
