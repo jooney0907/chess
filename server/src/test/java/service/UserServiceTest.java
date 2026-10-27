@@ -2,6 +2,9 @@ package service;
 
 import dataaccess.*;
 import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.Data;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
@@ -46,6 +49,36 @@ public class UserServiceTest {
         var userService = new UserService(da);
         var request = new RegisterRequest("cow", "moo", null);
         assertThrows(IllegalArgumentException.class, () -> userService.register(request));
+    }
+
+    @Test
+    void wrongPassword() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow", "moo", "cow@byu.edu");
+        userService.register(request);
+        var loginRequest = new LoginRequest(request.username(), "wrong");
+        assertThrows(IllegalStateException.class, () -> userService.login(loginRequest));
+    }
+
+    @Test
+    void unknownUsername() throws DataAccessException{
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow","moo","cow@byu.edu");
+        userService.register(request);
+        var loginRequest = new LoginRequest("dog", "woof");
+        assertThrows(IllegalStateException.class, () -> userService.login(loginRequest));
+    }
+
+    @Test
+    void missingPassword() throws DataAccessException{
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow","moo","cow@byu.edu");
+        userService.register(request);
+        var loginRequest = new LoginRequest("cow", null);
+        assertThrows(IllegalArgumentException.class, () -> userService.login(loginRequest));
     }
 
     @Test
