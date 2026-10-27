@@ -82,6 +82,16 @@ public class UserServiceTest {
     }
 
     @Test
+    void missingUsername() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow","moo","cow@byu.edu");
+        userService.register(request);
+        var loginRequest = new LoginRequest(null, "moo");
+        assertThrows(IllegalArgumentException.class, () -> userService.login(loginRequest));
+    }
+
+    @Test
     void loginWorks() throws DataAccessException {
         var da = new MemoryDataAccess();
         var userService = new UserService(da);
