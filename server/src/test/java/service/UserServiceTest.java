@@ -31,7 +31,20 @@ public class UserServiceTest {
         var da = new MemoryDataAccess();
         var userService = new UserService(da);
         var request = new RegisterRequest(null, "moo", "cow@byu.edu");
-        assertThrows(IllegalArgumentException.class,() -> userService.register(request));
-
+        assertThrows(IllegalArgumentException.class, () -> userService.register(request));
+    }
+    @Test
+    void registerMissingPassword() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow", null, "cow@byu.edu");
+        assertThrows(IllegalArgumentException.class, () -> userService.register(request));
+    }
+    @Test
+    void registerMissingEmail() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow", "moo", null);
+        assertThrows(IllegalArgumentException.class, () -> userService.register(request));
     }
 }
