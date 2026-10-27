@@ -1,9 +1,7 @@
 package service;
 import java.util.UUID;
-
 import dataaccess.*;
-import io.javalin.validation.ValidationException;
-import model.UserData;
+import model.* ;
 
 
 public class UserService {
@@ -21,7 +19,10 @@ public class UserService {
             throw new IllegalStateException("403 Error");
         }
         var newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
-        return null;
+        String authToken = UUID.randomUUID().toString();
+        var authData = new AuthData(authToken,newUser.username());
+        dataAccess.register(newUser,authData);
+        return new RegisterResult(newUser.username(),authToken);
     }
     public LoginRequest login(LoginRequest loginRequest) { return null;}
     public void logout(LogoutRequest logoutRequest) {}
