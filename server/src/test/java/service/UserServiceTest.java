@@ -47,4 +47,16 @@ public class UserServiceTest {
         var request = new RegisterRequest("cow", "moo", null);
         assertThrows(IllegalArgumentException.class, () -> userService.register(request));
     }
+
+    @Test
+    void loginWorks() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var userService = new UserService(da);
+        var request = new RegisterRequest("cow", "moo", "cow@byu.edu");
+        userService.register(request);
+        var loginRequest= new LoginRequest(request.username(), request.password());
+        var result = userService.login(loginRequest);
+        assertEquals(loginRequest.username(),result.username());
+        assertNotNull(result.authToken());
+    }
 }

@@ -15,6 +15,10 @@ public class MemoryDataAccess implements DataAccess{
     public UserData getUser(String userName){
         return users.get(userName);
     }
+    @Override
+    public void createAuth(AuthData authData){
+        auths.put(authData.authToken(), authData);
+    }
 
     @Override
     public void clear(){

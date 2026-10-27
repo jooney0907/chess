@@ -24,7 +24,22 @@ public class UserService {
         dataAccess.register(newUser,authData);
         return new RegisterResult(newUser.username(),authToken);
     }
-    public LoginRequest login(LoginRequest loginRequest) { return null;}
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+        var user = dataAccess.getUser(loginRequest.username());
+        if(loginRequest.username()==null || loginRequest.password() == null){
+            throw new IllegalArgumentException("400 Error");
+        }
+        if(user==null){
+            throw new IllegalStateException("401 Error");
+        }
+        if(!user.password().equals(loginRequest.password())){
+            throw new IllegalStateException("401 Error");
+        }
+
+        String authToken = UUID.randomUUID().toString();
+        var authData = new AuthData(authToken,user.username());
+        dataAccess.createAuth(authData);
+        return new LoginResult(user.username(), authToken);}
     public void logout(LogoutRequest logoutRequest) {}
 
 }

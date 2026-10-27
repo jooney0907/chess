@@ -2,5 +2,5 @@ package service;
 
 public record LoginRequest(
     String username,
-    String authToken
+    String password
     ){}
