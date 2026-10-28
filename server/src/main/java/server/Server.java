@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import jdk.management.jfr.RecordingInfo;
 import service.*;
 import io.javalin.*;
 import io.javalin.http.*;
@@ -10,13 +11,14 @@ public class Server {
 
     private final Javalin javalin;
     private final AdminService adminService;
+    private final UserService userService;
 
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         var da = new MemoryDataAccess();
         adminService = new AdminService(da);
-        var userService = new UserService(da);
+        userService = new UserService(da);
         javalin.post("/user",this::register);
         javalin.delete("/db", this::clear);
         javalin.post("/session", this::login);
@@ -26,8 +28,22 @@ public class Server {
         javalin.put("/game",this::joinGame);
     }
 
-    private void register(Context context){
-        var serializer = new Gson();
+    private void register(Context context) {
+        var serializer=new Gson();
+        try {
+            String reqJson=context.body();
+            var user=serializer.fromJson(reqJson, RegisterRequest.class);
+            var authData=userService.register(user);
+            context.result(serializer.toJson(authData));
+        } catch (Exception ex) {
+            var message = String.format("{\"message\": \"Error: %s\" }", ex.getMessage());
+            if (ex.getMessage().equals("403 Error")) {
+                context.status(403).result(message);
+            }
+            else {
+                context.status(400).result(message);
+            }
+        }
     }
 
     private void clear(Context context) throws DataAccessException {
