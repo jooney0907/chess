@@ -51,9 +51,41 @@ public class Server {
         context.result("{}");
     }
     private void login(Context context){
-
+        var serializer = new Gson();
+        try {
+            String reqJson = context.body();
+            var request = serializer.fromJson(reqJson, LoginRequest.class);
+            var authData = userService.login(request);
+            context.contentType("application/json");
+            context.result(serializer.toJson(authData));
+        } catch (Exception ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\" }", ex.getMessage()
+            );
+            if (ex.getMessage().equals("401 Error")) {
+                context.status(401).result(message);
+            } else {
+                context.status(400).result(message);
+            }
+        }
     }
     private void logout(Context context){
+        try {
+            String authToken = context.header("authorization");
+            var request = new LogoutRequest(authToken);
+            userService.logout(request);
+            context.contentType("application/json");
+            context.result("{}");
+        } catch (Exception ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\" }", ex.getMessage()
+            );
+            if ("401 Error".equals(ex.getMessage())) {
+                context.status(401).result(message);
+            } else {
+                context.status(400).result(message);
+            }
+        }
 
     }
 
