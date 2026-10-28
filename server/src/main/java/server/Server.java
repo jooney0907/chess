@@ -137,7 +137,29 @@ public class Server {
     }
 
     private void joinGame(Context context){
+        var serializer = new Gson();
+        try {
+            String authToken = context.header("authorization");
+            String reqJson = context.body();
+            var request = serializer.fromJson(reqJson, JoinGameRequest.class);
+            gameService.joinGame(authToken, request);
 
+            context.contentType("application/json");
+            context.result("{}");
+
+        } catch (Exception ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\" }", ex.getMessage()
+            );
+
+            if ("401 Error".equals(ex.getMessage())) {
+                context.status(401).result(message);
+            } else if ("403 Error".equals(ex.getMessage())) {
+                context.status(403).result(message);
+            } else {
+                context.status(400).result(message);
+            }
+        }
     }
 
     public int run(int desiredPort) {

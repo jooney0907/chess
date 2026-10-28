@@ -40,4 +40,16 @@ public class GameService {
         dataAccess.createGame(gameData);
         return new CreateGameResult(gameID);
     }
+    public void joinGame(String authToken, JoinGameRequest request) throws DataAccessException {
+        var authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new IllegalStateException("401 Error");
+        }
+        if (request == null || request.gameID() == null || request.playerColor() == null) {
+            throw new IllegalArgumentException("400 Error");
+        }
+
+    }
+
+
 }
