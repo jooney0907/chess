@@ -1,5 +1,5 @@
 package service;
-import java.util.UUID;
+import java.util.*;
 import dataaccess.*;
 import model.* ;
 
@@ -49,5 +49,13 @@ public class UserService {
         dataAccess.deleteAuth(authData.authToken());
         }
 
+    public List<GameData> listGames(String authToken) throws DataAccessException{
+        var authData = dataAccess.getAuth(authToken);
+
+        if(authData==null){
+            throw new IllegalStateException("401 Error");
+        }
+        return dataAccess.getAllGames();
+    }
 
 }

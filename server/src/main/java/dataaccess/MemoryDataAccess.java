@@ -27,7 +27,10 @@ public class MemoryDataAccess implements DataAccess{
     public void deleteAuth(String authToken){
         auths.remove(authToken);
     }
-
+    @Override
+    public List<GameData> getAllGames() throws DataAccessException {
+        return new ArrayList<>(games.values());
+    }
     @Override
     public void clear(){
         users.clear();
