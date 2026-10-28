@@ -7,18 +7,22 @@ import io.javalin.*;
 import io.javalin.http.*;
 import model.*;
 import dataaccess.*;
+
+import java.util.*;
+
 public class Server {
 
     private final Javalin javalin;
     private final AdminService adminService;
     private final UserService userService;
-
+    private final GameService gameService;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         var da = new MemoryDataAccess();
         adminService = new AdminService(da);
         userService = new UserService(da);
+        gameService = new GameService(da);
         javalin.post("/user",this::register);
         javalin.delete("/db", this::clear);
         javalin.post("/session", this::login);
@@ -90,7 +94,26 @@ public class Server {
     }
 
     private void listGames(Context context){
+        var serializer = new Gson();
+        try {
+            String authToken = context.header("authorization");
 
+            var result = gameService.listGames(authToken);
+
+            context.contentType("application/json");
+            context.result(serializer.toJson(Map.of("games", result)));
+
+        } catch (Exception ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\" }", ex.getMessage()
+            );
+
+            if ("401 Error".equals(ex.getMessage())) {
+                context.status(401).result(message);
+            } else {
+                context.status(400).result(message);
+            }
+        }
     }
     private void createGame(Context context){
 
