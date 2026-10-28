@@ -116,8 +116,26 @@ public class Server {
         }
     }
     private void createGame(Context context){
-
+        var serializer = new Gson();
+        try {
+            String authToken = context.header("authorization");
+            String reqJson = context.body();
+            var request = serializer.fromJson(reqJson, CreateGameRequest.class);
+            var result = gameService.createGame(authToken, request);
+            context.contentType("application/json");
+            context.result(serializer.toJson(result));
+        } catch (Exception ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\" }", ex.getMessage()
+            );
+            if ("401 Error".equals(ex.getMessage())) {
+                context.status(401).result(message);
+            } else {
+                context.status(400).result(message);
+            }
+        }
     }
+
     private void joinGame(Context context){
 
     }
