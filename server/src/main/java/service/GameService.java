@@ -48,7 +48,26 @@ public class GameService {
         if (request == null || request.gameID() == null || request.playerColor() == null) {
             throw new IllegalArgumentException("400 Error");
         }
-
+        var gameData = dataAccess.getGame(request.gameID());
+        if (gameData == null) {
+            throw new IllegalArgumentException("400 Error");
+        }
+        if (request.playerColor().equals("WHITE")) {
+            if (gameData.whiteUsername() != null) {
+                throw new IllegalStateException("403 Error");
+            }
+            gameData = new GameData(gameData.gameID(), authData.username(),
+                    gameData.blackUsername(), gameData.gameName(), gameData.game());
+        } else if (request.playerColor().equals("BLACK")) {
+            if (gameData.blackUsername() != null) {
+                throw new IllegalStateException("403 Error");
+            }
+            gameData = new GameData(gameData.gameID(), gameData.whiteUsername(),
+                    authData.username(), gameData.gameName(), gameData.game());
+        } else {
+            throw new IllegalArgumentException("400 Error");
+        }
+        dataAccess.createGame(gameData);
     }
 
 
