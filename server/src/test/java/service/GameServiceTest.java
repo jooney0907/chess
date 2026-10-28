@@ -40,4 +40,20 @@ public class GameServiceTest {
         var request = new CreateGameRequest("Test Game");
         assertThrows(IllegalStateException.class, () -> {gameService.createGame("invalidToken", request);});
     }
+
+    @Test
+    void whiteJoinGame() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var gameService = new GameService(da);
+        var authData = new AuthData("validToken", "josh");
+        da.createAuth(authData);
+        var request = new CreateGameRequest("Test Game");
+        var result = gameService.createGame("validToken", request);
+        var joinRequest = new JoinGameRequest("WHITE", result.gameID());
+        gameService.joinGame("validToken", joinRequest);
+        var game = da.getGame(result.gameID());
+        assertNotNull(game);
+        assertEquals("josh", game.whiteUsername());
+        assertNull(game.blackUsername());
+    }
 }
