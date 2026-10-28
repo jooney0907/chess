@@ -2,7 +2,6 @@ package dataaccess;
 
 import model.*;
 import java.util.*;
-import javax.xml.crypto.Data;
 
 public interface DataAccess {
     void clear() throws DataAccessException;
@@ -11,5 +10,7 @@ public interface DataAccess {
     void deleteAuth(String authToken) throws DataAccessException;
     void register(UserData userData, AuthData authData) throws DataAccessException;
     List<GameData> getAllGames() throws DataAccessException;
+    void createGame(GameData gameData);
+    GameData getGame(Integer gameID);
     UserData getUser(String userName) throws DataAccessException;
 }

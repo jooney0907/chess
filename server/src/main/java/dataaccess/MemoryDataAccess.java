@@ -1,6 +1,7 @@
 package dataaccess;
 import model. *;
 import java.util.*;
+import chess.*;
 
 public class MemoryDataAccess implements DataAccess{
     private Map<String, UserData> users = new HashMap<>();
@@ -28,9 +29,19 @@ public class MemoryDataAccess implements DataAccess{
         auths.remove(authToken);
     }
     @Override
-    public List<GameData> getAllGames() throws DataAccessException {
+    public List<GameData> getAllGames() {
         return new ArrayList<>(games.values());
     }
+
+    @Override
+    public void createGame(GameData gameData) {
+        games.put(gameData.gameID(), gameData);
+    }
+    @Override
+    public GameData getGame(Integer gameID) {
+        return games.get(gameID);
+    }
+
     @Override
     public void clear(){
         users.clear();
