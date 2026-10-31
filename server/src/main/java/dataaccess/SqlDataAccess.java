@@ -2,11 +2,51 @@ package dataaccess;
 
 import model.*;
 
+import java.sql.*;
 import java.util.*;
 
 public class SqlDataAccess implements DataAccess{
     public SqlDataAccess() throws DataAccessException{
-        DatabaseManager.createDatabase();
+        DatabaseManager.createDatabase();();
+    }
+
+    void configureDatabase() throws SQLException, DataAccessException {
+        try (var conn = DatabaseManager.getConnection()){
+            var createUserTable = """
+                CREATE TABLE IF NOT EXISTS users (
+                                username VARCHAR(255) NOT NULL,
+                                password VARCHAR(255) NOT NULL,
+                                email VARCHAR(255) NOT NULL,
+                                PRIMARY KEY (username)
+                            );
+                """;
+            try (var createTableStatement = conn.prepareStatement(createUserTable)){
+                createTableStatement.executeUpdate();
+            }
+            var createAuthTable = """
+                CREATE TABLE IF NOT EXISTS auth (
+                                authToken VARCHAR(255) NOT NULL,
+                                username VARCHAR(255) NOT NULL,
+                                PRIMARY KEY (authToken)
+                            );
+                """;
+            try (var createTableStatement = conn.prepareStatement(createAuthTable)){
+                createTableStatement.executeUpdate(createAuthTable);
+            }
+            var createGameTable = """
+                CREATE TABLE IF NOT EXISTS games (
+                                username VARCHAR(255) NOT NULL,
+                                password VARCHAR(255) NOT NULL,
+                                email VARCHAR(255) NOT NULL,
+                                PRIMARY KEY (username)
+                            );
+                """;
+            try (var createTableStatement = conn.prepareStatement(createGameTable)){
+                createTableStatement.executeUpdate();
+            } catch(SQLException ex){
+                throw new DataAccessException("Failed");
+            }
+        }
     }
 
     @Override
