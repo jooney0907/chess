@@ -184,8 +184,26 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public GameData getGame(Integer gameID) {
-        return null;
+    public GameData getGame(Integer gameID) throws DataAccessException {
+        var statement = "SELECT * FROM games WHERE gameID = ?";
+        Gson gson = new Gson();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setInt(1, gameID);
+                var rs = preparedStatement.executeQuery();
+                GameData game = null;
+                if (rs.next()) {
+                    ChessGame chessGame = gson.fromJson(rs.getString("game"), ChessGame.class);
+                    game = new GameData(rs.getInt("gameID"),rs.getString("whiteUsername"),
+                            rs.getString("blackUsername"),rs.getString("gameName"),
+                            chessGame);
+                }
+                return game;
+            }
+        }
+        catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Failed");
+        }
     }
 
     @Override
