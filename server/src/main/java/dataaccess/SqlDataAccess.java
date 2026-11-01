@@ -75,13 +75,37 @@ public class SqlDataAccess implements DataAccess{
 
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
-
+        var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authData.username());
+                preparedStatement.setString(2, authData.authToken());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed");
+        }
     }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
-        return null;
+        var statement = "SELECT * FROM auth WHERE authToken = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                var rs = preparedStatement.executeQuery();
+                AuthData auth = null;
+                if (rs.next()) {
+                    auth = new AuthData(rs.getString("authToken"), rs.getString("username"));
+                }
+                return auth;
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
+
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
