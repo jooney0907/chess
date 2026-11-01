@@ -2,8 +2,9 @@ package dataaccess;
 
 import org.junit.jupiter.api.Test;
 import model.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import org.mindrot.jbcrypt.BCrypt;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MemoryDataAccessTest {
@@ -13,7 +14,7 @@ public class MemoryDataAccessTest {
         var da = new MemoryDataAccess();
         da.register(user, null);
         //var user = registerRandomUser(da);
-        assertEquals(user,da.getUser(user.username()));
+        assertNotNull(da.getUser(user.username()));
         da.clear();
         assertNull(da.getUser(user.username()));
     }
@@ -22,7 +23,11 @@ public class MemoryDataAccessTest {
         var user = new UserData("cow", "moo", "cow@byu.edu");
         var da = new MemoryDataAccess();
         da.register(user, null);
-        assertEquals(user, da.getUser(user.username()));
+        var result = da.getUser(user.username());
+        assertNotNull(result);
+        assertEquals(user.username(), result.username());
+        assertEquals(user.email(), result.email());
+        assertTrue(BCrypt.checkpw(user.password(), result.password()));
     }
 
     @Test
