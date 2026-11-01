@@ -44,28 +44,16 @@ public class Server {
             var authData=userService.register(user);
             context.result(serializer.toJson(authData));
         } catch (Exception ex) {
-            var message = String.format("{\"message\": \"Error: %s\" }", ex.getMessage());
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if (ex.getMessage().equals("403 Error")) {
-                context.status(403).result(message);
-            }
-            else {
-                context.status(400).result(message);
-            }
+            exceptions(ex,context);
         }
     }
 
-    private void clear(Context context) throws DataAccessException {
+    private void clear(Context context) {
         try {
             adminService.clear();
             context.result("{}");
         } catch (DataAccessException ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\"}", ex.getMessage()
-            );
-            context.status(500).result(message);
+            exceptions(ex,context);
         }
     }
     private void login(Context context){
@@ -77,17 +65,7 @@ public class Server {
             context.contentType("application/json");
             context.result(serializer.toJson(authData));
         } catch (Exception ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\" }", ex.getMessage()
-            );
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if (ex.getMessage().equals("401 Error")) {
-                context.status(401).result(message);
-            } else {
-                context.status(400).result(message);
-            }
+            exceptions(ex,context);
         }
     }
     private void logout(Context context){
@@ -98,17 +76,7 @@ public class Server {
             context.contentType("application/json");
             context.result("{}");
         } catch (Exception ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\" }", ex.getMessage()
-            );
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if ("401 Error".equals(ex.getMessage())) {
-                context.status(401).result(message);
-            } else {
-                context.status(400).result(message);
-            }
+            exceptions(ex,context);
         }
 
     }
@@ -117,24 +85,11 @@ public class Server {
         var serializer = new Gson();
         try {
             String authToken = context.header("authorization");
-
             var result = gameService.listGames(authToken);
-
             context.contentType("application/json");
             context.result(serializer.toJson(Map.of("games", result)));
-
         } catch (Exception ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\" }", ex.getMessage()
-            );
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if ("401 Error".equals(ex.getMessage())) {
-                context.status(401).result(message);
-            } else {
-                context.status(400).result(message);
-            }
+            exceptions(ex,context);
         }
     }
     private void createGame(Context context){
@@ -147,17 +102,7 @@ public class Server {
             context.contentType("application/json");
             context.result(serializer.toJson(result));
         } catch (Exception ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\" }", ex.getMessage()
-            );
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if ("401 Error".equals(ex.getMessage())) {
-                context.status(401).result(message);
-            } else {
-                context.status(400).result(message);
-            }
+            exceptions(ex, context);
         }
     }
 
@@ -173,19 +118,7 @@ public class Server {
             context.result("{}");
 
         } catch (Exception ex) {
-            var message = String.format(
-                    "{\"message\": \"Error: %s\" }", ex.getMessage()
-            );
-            if(ex instanceof DataAccessException){
-                context.status(500).result(message);
-            }
-            else if ("401 Error".equals(ex.getMessage())) {
-                context.status(401).result(message);
-            } else if ("403 Error".equals(ex.getMessage())) {
-                context.status(403).result(message);
-            } else {
-                context.status(400).result(message);
-            }
+            exceptions(ex,context);
         }
     }
 
@@ -196,5 +129,20 @@ public class Server {
 
     public void stop() {
         javalin.stop();
+    }
+
+    private void exceptions(Exception ex, Context context) {
+        int status;
+        if (ex instanceof DataAccessException) {
+            status = 500;
+        } else if ("401 Error".equals(ex.getMessage())) {
+            status = 401;
+        } else if ("403 Error".equals(ex.getMessage())) {
+            status = 403;
+        } else {
+            status = 400;
+        }
+        context.status(status);
+        context.json(Map.of("message", "Error: " + ex.getMessage()));
     }
 }
