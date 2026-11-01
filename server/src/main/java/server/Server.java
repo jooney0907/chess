@@ -132,17 +132,17 @@ public class Server {
     }
 
     private void exceptions(Exception ex, Context context) {
-        int status;
+        var message = String.format(
+                "{\"message\": \"Error: %s\" }", ex.getMessage()
+        );
         if (ex instanceof DataAccessException) {
-            status = 500;
+            context.status(500).result(message);
         } else if ("401 Error".equals(ex.getMessage())) {
-            status = 401;
+            context.status(401).result(message);
         } else if ("403 Error".equals(ex.getMessage())) {
-            status = 403;
+            context.status(403).result(message);
         } else {
-            status = 400;
+            context.status(400).result(message);
         }
-        context.status(status);
-        context.json(Map.of("message", "Error: " + ex.getMessage()));
     }
 }
