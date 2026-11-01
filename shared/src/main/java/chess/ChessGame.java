@@ -108,36 +108,26 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPos = null;
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                ChessPosition curPosition = new ChessPosition(i, j);
+        for(int i = 1;i<= 8;i++){
+            for(int j=1;j<=8;j++){
+                ChessPosition curPosition = new ChessPosition(i,j);
                 ChessPiece curPiece = board.getPiece(curPosition);
-                if (curPiece != null && curPiece.getTeamColor() == teamColor &&
-                        curPiece.getPieceType() == ChessPiece.PieceType.KING) {kingPos = curPosition;
+                if(curPiece!= null && curPiece.getTeamColor() == teamColor && curPiece.getPieceType() == ChessPiece.PieceType.KING){
+                    kingPos =  curPosition;
                 }
             }
         }
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                ChessPosition curPosition = new ChessPosition(i, j);
+        for(int i=1;i<=8;i++){
+            for(int j=1;j<=8;j++){
+                ChessPosition curPosition = new ChessPosition(i,j);
                 ChessPiece curPiece = board.getPiece(curPosition);
-                if (curPiece == null || curPiece.getTeamColor() == teamColor) {
-                    continue;
+                if(curPiece != null && curPiece.getTeamColor() != teamColor){
+                    for(ChessMove move : curPiece.pieceMoves(board,curPosition)){
+                        if(move.getEndPosition().equals(kingPos)){
+                            return true;
+                        }
+                    }
                 }
-                if (kingAttacked(curPiece, curPosition, kingPos)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean kingAttacked(ChessPiece piece, ChessPosition position,
-                                  ChessPosition kingPos) {
-        for (ChessMove move : piece.pieceMoves(board, position)) {
-            if (move.getEndPosition().equals(kingPos)) {
-                return true;
             }
         }
         return false;
