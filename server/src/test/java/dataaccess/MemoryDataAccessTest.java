@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class MemoryDataAccessTest {
     @Test
     void clear() {
-        var user = new UserData("cow", "cow@byu.edu", "moo");
+        var user = new UserData("cow", "moo", "cow@byu.edu");
         var da = new MemoryDataAccess();
         da.register(user, null);
         //var user = registerRandomUser(da);
@@ -19,7 +19,7 @@ public class MemoryDataAccessTest {
     }
     @Test
     void getUser(){
-        var user = new UserData("cow", "cow@byu.edu", "moo");
+        var user = new UserData("cow", "moo", "cow@byu.edu");
         var da = new MemoryDataAccess();
         da.register(user, null);
         assertEquals(user, da.getUser(user.username()));
