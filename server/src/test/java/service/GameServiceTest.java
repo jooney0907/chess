@@ -42,6 +42,24 @@ public class GameServiceTest {
     }
 
     @Test
+    void joinGameWhiteAlreadyTaken() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var gameService = new GameService(da);
+        UserData user1 = new UserData("cow", "moo", "cow@byu.edu");
+        UserData user2 = new UserData("monkey", "oooh", "monkey@byu.edu");
+        da.register(user1, null);
+        da.register(user2, null);
+        AuthData auth1 = new AuthData("milk", "cow");
+        AuthData auth2 = new AuthData("banana", "monkey");
+        da.createAuth(auth1);
+        da.createAuth(auth2);
+        CreateGameResult result = gameService.createGame("milk", new CreateGameRequest("Test Game"));
+        gameService.joinGame("milk", new JoinGameRequest("WHITE", result.gameID()));
+        assertThrows(IllegalStateException.class, () -> gameService.joinGame("banana", new JoinGameRequest("WHITE", result.gameID()))
+        );
+    }
+
+    @Test
     void whiteJoinGame() throws DataAccessException {
         var da = new MemoryDataAccess();
         var gameService = new GameService(da);
@@ -55,5 +73,16 @@ public class GameServiceTest {
         assertNotNull(game);
         assertEquals("josh", game.whiteUsername());
         assertNull(game.blackUsername());
+    }
+    @Test
+    void blackJoinGame() throws DataAccessException {
+        var da = new MemoryDataAccess();
+        var gameService = new GameService(da);
+        da.createAuth(new AuthData("validToken", "josh"));
+        var result = gameService.createGame("validToken", new CreateGameRequest("Test Game"));
+        gameService.joinGame("validToken", new JoinGameRequest("BLACK", result.gameID()));
+        var game = da.getGame(result.gameID());
+        assertEquals("josh", game.blackUsername());
+        assertNull(game.whiteUsername());
     }
 }
