@@ -69,4 +69,8 @@ public class SqlDataAccessTest {
         assertEquals("cow@byu.edu", result.email());
         assertTrue(BCrypt.checkpw("moo", db.getUser("cow").password()));
     }
+    @Test
+    public void getUserNotFound() throws DataAccessException{
+        assertNull(db.getUser("cow"));
+    }
 }
