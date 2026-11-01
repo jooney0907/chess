@@ -140,21 +140,27 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(!isInCheck(teamColor)){
+        if (!isInCheck(teamColor)) {
             return false;
         }
-        for(int i =1; i<=8; i++){
-            for(int j =1; j<= 8; j++){
-                ChessPosition curPosition = new ChessPosition(i,j);
-                ChessPiece curPiece = board.getPiece(curPosition);
-                if(curPiece!= null && curPiece.getTeamColor() == teamColor) {
-                    if (!validMoves(curPosition).isEmpty()) {
-                        return false;
-                    }
+        return !hasValidMoves(teamColor);
+    }
+
+    private boolean hasValidMoves(TeamColor teamColor) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition position = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(position);
+                if (piece == null || piece.getTeamColor() != teamColor) {
+                    continue;
+                }
+                if (!validMoves(position).isEmpty()) {
+                    return true;
                 }
             }
         }
-        return true;
+
+        return false;
     }
 
     /**
