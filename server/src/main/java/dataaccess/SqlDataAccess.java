@@ -6,11 +6,12 @@ import java.sql.*;
 import java.util.*;
 
 public class SqlDataAccess implements DataAccess{
-    public SqlDataAccess() throws DataAccessException{
-        DatabaseManager.createDatabase();();
+    public SqlDataAccess() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        configureDatabase();
     }
 
-    void configureDatabase() throws SQLException, DataAccessException {
+    void configureDatabase() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()){
             var createUserTable = """
                 CREATE TABLE IF NOT EXISTS users (
@@ -31,21 +32,24 @@ public class SqlDataAccess implements DataAccess{
                             );
                 """;
             try (var createTableStatement = conn.prepareStatement(createAuthTable)){
-                createTableStatement.executeUpdate(createAuthTable);
+                createTableStatement.executeUpdate();
             }
             var createGameTable = """
                 CREATE TABLE IF NOT EXISTS games (
-                                username VARCHAR(255) NOT NULL,
-                                password VARCHAR(255) NOT NULL,
-                                email VARCHAR(255) NOT NULL,
-                                PRIMARY KEY (username)
+                                gameID INT NOT NULL, 
+                                whiteUsername VARCHAR(255),
+                                blackUsername VARCHAR(255),
+                                gameName VARCHAR(255) NOT NULL,
+                                game TEXT NOT NULL,
+                                PRIMARY KEY (gameID)
                             );
                 """;
             try (var createTableStatement = conn.prepareStatement(createGameTable)){
                 createTableStatement.executeUpdate();
-            } catch(SQLException ex){
-                throw new DataAccessException("Failed");
             }
+            }
+        catch(SQLException ex){
+            throw new DataAccessException("Failed");
         }
     }
 

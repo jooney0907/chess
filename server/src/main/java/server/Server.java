@@ -17,9 +17,14 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
 
-    public Server() {
+    public Server(){
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-        var da = new MemoryDataAccess();
+        DataAccess da;
+        try {
+            da = new SqlDataAccess();
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("Failed");
+        }
         adminService = new AdminService(da);
         userService = new UserService(da);
         gameService = new GameService(da);
