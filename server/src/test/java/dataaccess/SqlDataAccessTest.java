@@ -95,6 +95,7 @@ public class SqlDataAccessTest {
         var gameList = db.getAllGames();
         assertEquals(listOfGames, gameList);
     }
+
     @Test
     public void getAllGamesEmptyTest() throws DataAccessException {
         assertTrue(db.getAllGames().isEmpty());
@@ -120,5 +121,18 @@ public class SqlDataAccessTest {
         db.createGame(game2);
         assertEquals(game1, db.getGame(1));
         assertEquals(game2, db.getGame(2));
+    }
+    @Test
+    void updateGameSuccess() throws DataAccessException {
+        var da = new SqlDataAccess();
+        da.clear();
+        var game = new GameData(1, null, null, "Test Game", new ChessGame());
+        da.createGame(game);
+        var updatedGame = new GameData(1, "player1", "player2", "Test Game", new ChessGame());
+        da.updateGame(updatedGame);
+        var result = da.getGame(1);
+        assertEquals("player1", result.whiteUsername());
+        assertEquals("player2", result.blackUsername());
+        assertEquals("Test Game", result.gameName());
     }
 }
