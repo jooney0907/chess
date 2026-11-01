@@ -55,7 +55,18 @@ public class SqlDataAccessTest {
         var user = new UserData("cow", "moo", "cow@byu.edu");
         var authData = new AuthData("zzz", "cow");
         db.register(user,authData);
+        assertNotNull(db.getUser("cow"));
         assertEquals(authData, db.getAuth("zzz"));
+        assertTrue(BCrypt.checkpw("moo", db.getUser("cow").password()));
+    }
+    @Test
+    public void getUserTest() throws DataAccessException{
+        var user = new UserData("cow", "moo", "cow@byu.edu");
+        var authData = new AuthData("zzz", "cow");
+        db.register(user, authData);
+        UserData result = db.getUser("cow");
+        assertEquals("cow", result.username());
+        assertEquals("cow@byu.edu", result.email());
         assertTrue(BCrypt.checkpw("moo", db.getUser("cow").password()));
     }
 }

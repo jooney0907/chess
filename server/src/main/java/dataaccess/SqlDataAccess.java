@@ -155,7 +155,21 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public UserData getUser(String userName) throws DataAccessException {
-        return null;
+    public UserData getUser(String username) throws DataAccessException {
+        var statement = "SELECT * FROM users WHERE username = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                var rs = preparedStatement.executeQuery();
+                UserData user = null;
+                if (rs.next()) {
+                    user = new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+                }
+                return user;
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Failed");
+        }
     }
 }
