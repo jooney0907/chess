@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -139,9 +141,26 @@ public class SqlDataAccess implements DataAccess{
             throw new DataAccessException("Failed");
         }
     }
-        @Override
+    @Override
     public List<GameData> getAllGames() throws DataAccessException {
-        return List.of();
+        var statement = "SELECT * from games";
+        Gson gson = new Gson();
+        List<GameData> gameList = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                var rs = preparedStatement.executeQuery();
+                while(rs.next()){
+                    ChessGame chessGame = gson.fromJson(rs.getString("game"), ChessGame.class);;
+                    GameData game = new GameData(rs.getInt("gameID"),rs.getString("whiteUsername"),
+                            rs.getString("blackUsername"),rs.getString("gameName"),
+                            chessGame);
+                    gameList.add(game);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed");
+        }
+        return gameList;
     }
 
     @Override

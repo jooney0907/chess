@@ -1,9 +1,12 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,5 +75,11 @@ public class SqlDataAccessTest {
     @Test
     public void getUserNotFound() throws DataAccessException{
         assertNull(db.getUser("cow"));
+    }
+
+
+    @Test
+    public void getAllGamesEmptyTest() throws DataAccessException {
+        assertTrue(db.getAllGames().isEmpty());
     }
 }
