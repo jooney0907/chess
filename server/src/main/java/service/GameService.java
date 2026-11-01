@@ -67,7 +67,7 @@ public class GameService {
         } else {
             throw new IllegalArgumentException("400 Error");
         }
-        dataAccess.createGame(gameData);
+        dataAccess.updateGame(gameData);
     }
 
 

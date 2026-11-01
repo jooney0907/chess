@@ -224,4 +224,21 @@ public class SqlDataAccess implements DataAccess{
             throw new DataAccessException("Failed");
         }
     }
+    @Override
+    public void updateGame(GameData gameData) throws DataAccessException {
+        var statement = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, game = ? WHERE gameID = ? ";
+        Gson gson = new Gson();
+        String gameJson = gson.toJson(gameData.game());
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement)) {
+            preparedStatement.setString(1, gameData.whiteUsername());
+            preparedStatement.setString(2, gameData.blackUsername());
+            preparedStatement.setString(3, gameData.gameName());
+            preparedStatement.setString(4, gameJson);
+            preparedStatement.setInt(5, gameData.gameID());
+            preparedStatement.executeUpdate();
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Failed to update game: " + e.getMessage());
+        }
+    }
 }
