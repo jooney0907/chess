@@ -1,14 +1,17 @@
-package dataaccess;
+package dataaccess.sql;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.util.*;
 
-public class SqlDataAccess implements DataAccess{
+public class SqlDataAccess implements DataAccess {
     public SqlDataAccess() throws DataAccessException {
         DatabaseManager.createDatabase();
         configureDatabase();

@@ -1,10 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.sql.SqlDataAccess;
 import service.*;
 import io.javalin.*;
 import io.javalin.http.*;
-import model.*;
 import dataaccess.*;
 
 import java.util.*;
