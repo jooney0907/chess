@@ -10,7 +10,7 @@ public interface DataAccess {
     void deleteAuth(String authToken) throws DataAccessException;
     void register(UserData userData, AuthData authData) throws DataAccessException;
     List<GameData> getAllGames() throws DataAccessException;
-    void createGame(GameData gameData);
+    void createGame(GameData gameData) throws DataAccessException;
     GameData getGame(Integer gameID);
     UserData getUser(String userName) throws DataAccessException;
 }

@@ -77,7 +77,9 @@ public class SqlDataAccessTest {
         assertNull(db.getUser("cow"));
     }
 
-
+    @Test
+    public void getAllGamesTest() throws DataAccessException{
+    }
     @Test
     public void getAllGamesEmptyTest() throws DataAccessException {
         assertTrue(db.getAllGames().isEmpty());
