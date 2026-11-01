@@ -5,8 +5,7 @@ import dataaccess.MemoryDataAccess;
 import model.UserData;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdminServiceTest {
     @Test
@@ -15,7 +14,7 @@ public class AdminServiceTest {
     var adminService = new AdminService(da);
     var user = new UserData("cow", "moo", "cow@byu.edu");
     da.register(user, null);
-    assertEquals(user, da.getUser(user.username()));
+    assertNotNull(da.getUser(user.username()));
     adminService.clear();
     assertNull(da.getUser(user.username()));
     }

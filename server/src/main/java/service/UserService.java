@@ -2,7 +2,7 @@ package service;
 import java.util.*;
 import dataaccess.*;
 import model.* ;
-
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
     private final DataAccess dataAccess;
@@ -25,17 +25,16 @@ public class UserService {
         return new RegisterResult(newUser.username(),authToken);
     }
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
-        var user = dataAccess.getUser(loginRequest.username());
-        if(loginRequest.username()==null || loginRequest.password() == null){
+        if (loginRequest == null || loginRequest.username() == null || loginRequest.password() == null) {
             throw new IllegalArgumentException("400 Error");
         }
+        var user = dataAccess.getUser(loginRequest.username());
         if(user==null){
             throw new IllegalStateException("401 Error");
         }
-        if(!user.password().equals(loginRequest.password())){
+        if (!BCrypt.checkpw(loginRequest.password(), user.password())) {
             throw new IllegalStateException("401 Error");
         }
-
         String authToken = UUID.randomUUID().toString();
         var authData = new AuthData(authToken,user.username());
         dataAccess.createAuth(authData);

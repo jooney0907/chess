@@ -2,6 +2,7 @@ package dataaccess;
 import model. *;
 import java.util.*;
 import chess.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class MemoryDataAccess implements DataAccess{
     private Map<String, UserData> users = new HashMap<>();
@@ -9,7 +10,9 @@ public class MemoryDataAccess implements DataAccess{
     private Map<Integer, GameData> games = new HashMap<>();
     @Override
     public void register(UserData userData, AuthData authData){
-        users.put(userData.username(), userData);
+        String hashedPassword = BCrypt.hashpw(userData.password(),BCrypt.gensalt());
+        UserData hashedUser = new UserData(userData.username(), hashedPassword, userData.email());
+        users.put(hashedUser.username(), hashedUser);
         if (authData != null) {
             auths.put(authData.authToken(), authData);
         }
