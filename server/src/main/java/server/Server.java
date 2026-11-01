@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import jdk.management.jfr.RecordingInfo;
 import service.*;
 import io.javalin.*;
 import io.javalin.http.*;
@@ -46,7 +45,10 @@ public class Server {
             context.result(serializer.toJson(authData));
         } catch (Exception ex) {
             var message = String.format("{\"message\": \"Error: %s\" }", ex.getMessage());
-            if (ex.getMessage().equals("403 Error")) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if (ex.getMessage().equals("403 Error")) {
                 context.status(403).result(message);
             }
             else {
@@ -56,8 +58,15 @@ public class Server {
     }
 
     private void clear(Context context) throws DataAccessException {
-        adminService.clear();
-        context.result("{}");
+        try {
+            adminService.clear();
+            context.result("{}");
+        } catch (DataAccessException ex) {
+            var message = String.format(
+                    "{\"message\": \"Error: %s\"}", ex.getMessage()
+            );
+            context.status(500).result(message);
+        }
     }
     private void login(Context context){
         var serializer = new Gson();
@@ -71,7 +80,10 @@ public class Server {
             var message = String.format(
                     "{\"message\": \"Error: %s\" }", ex.getMessage()
             );
-            if (ex.getMessage().equals("401 Error")) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if (ex.getMessage().equals("401 Error")) {
                 context.status(401).result(message);
             } else {
                 context.status(400).result(message);
@@ -89,7 +101,10 @@ public class Server {
             var message = String.format(
                     "{\"message\": \"Error: %s\" }", ex.getMessage()
             );
-            if ("401 Error".equals(ex.getMessage())) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if ("401 Error".equals(ex.getMessage())) {
                 context.status(401).result(message);
             } else {
                 context.status(400).result(message);
@@ -112,8 +127,10 @@ public class Server {
             var message = String.format(
                     "{\"message\": \"Error: %s\" }", ex.getMessage()
             );
-
-            if ("401 Error".equals(ex.getMessage())) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if ("401 Error".equals(ex.getMessage())) {
                 context.status(401).result(message);
             } else {
                 context.status(400).result(message);
@@ -133,7 +150,10 @@ public class Server {
             var message = String.format(
                     "{\"message\": \"Error: %s\" }", ex.getMessage()
             );
-            if ("401 Error".equals(ex.getMessage())) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if ("401 Error".equals(ex.getMessage())) {
                 context.status(401).result(message);
             } else {
                 context.status(400).result(message);
@@ -156,8 +176,10 @@ public class Server {
             var message = String.format(
                     "{\"message\": \"Error: %s\" }", ex.getMessage()
             );
-
-            if ("401 Error".equals(ex.getMessage())) {
+            if(ex instanceof DataAccessException){
+                context.status(500).result(message);
+            }
+            else if ("401 Error".equals(ex.getMessage())) {
                 context.status(401).result(message);
             } else if ("403 Error".equals(ex.getMessage())) {
                 context.status(403).result(message);
