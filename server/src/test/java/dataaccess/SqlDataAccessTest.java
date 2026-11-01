@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SqlDataAccessTest {
+    private DataAccess db;
     @BeforeEach
-    public void clearDB() throws DataAccessException {
-        DataAccess db = new SqlDataAccess();
+    public void setup() throws DataAccessException {
+        db = new SqlDataAccess();
         db.clear();
     }
 
     @Test
     public void clearTest() throws DataAccessException {
-        DataAccess db = new SqlDataAccess();
         var authData = new AuthData("zzz", "cow");
         db.createAuth(authData);
         assertNotNull(db.getAuth("zzz"));
@@ -24,14 +24,12 @@ public class SqlDataAccessTest {
 
     @Test
     public void createAuthTest() throws DataAccessException {
-        DataAccess db = new SqlDataAccess();
         var authData = new AuthData("zzz", "cow");
         db.createAuth(authData);
         assertEquals(authData, db.getAuth("zzz"));
     }
     @Test
     public void getAuthTest() throws DataAccessException {
-        DataAccess db = new SqlDataAccess();
         var authData = new AuthData("zzz", "cow");
         db.createAuth(authData);
         AuthData result = db.getAuth("zzz");
@@ -40,7 +38,6 @@ public class SqlDataAccessTest {
     }
     @Test
     public void getAuthNotFound() throws DataAccessException{
-        DataAccess db = new SqlDataAccess();
         assertNull(db.getAuth("zzz"));
     }
 }
