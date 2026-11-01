@@ -40,4 +40,12 @@ public class SqlDataAccessTest {
     public void getAuthNotFound() throws DataAccessException{
         assertNull(db.getAuth("zzz"));
     }
+    @Test
+    public void deleteAuthTest() throws DataAccessException {
+        var authData = new AuthData("zzz", "cow");
+        db.createAuth(authData);
+        assertNotNull(db.getAuth("zzz"));
+        db.deleteAuth("zzz");
+        assertNull(db.getAuth("zzz"));
+    }
 }
