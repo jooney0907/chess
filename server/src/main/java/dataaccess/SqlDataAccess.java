@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.util.*;
@@ -102,7 +103,7 @@ public class SqlDataAccess implements DataAccess{
             }
         }
         catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Failed");
         }
     }
 
@@ -117,17 +118,28 @@ public class SqlDataAccess implements DataAccess{
             }
         }
         catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Failed");
         }
 
     }
 
     @Override
     public void register(UserData userData, AuthData authData) throws DataAccessException {
-
+        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, userData.username());
+                preparedStatement.setString(2, hashedPassword);
+                preparedStatement.setString(3, userData.email());
+                preparedStatement.executeUpdate();
+            }
+            createAuth(authData);
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed");
+        }
     }
-
-    @Override
+        @Override
     public List<GameData> getAllGames() throws DataAccessException {
         return List.of();
     }

@@ -3,6 +3,8 @@ package dataaccess;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SqlDataAccessTest {
@@ -47,5 +49,13 @@ public class SqlDataAccessTest {
         assertNotNull(db.getAuth("zzz"));
         db.deleteAuth("zzz");
         assertNull(db.getAuth("zzz"));
+    }
+    @Test
+    public void registerTest() throws DataAccessException{
+        var user = new UserData("cow", "moo", "cow@byu.edu");
+        var authData = new AuthData("zzz", "cow");
+        db.register(user,authData);
+        assertEquals(authData, db.getAuth("zzz"));
+        assertTrue(BCrypt.checkpw("moo", db.getUser("cow").password()));
     }
 }
