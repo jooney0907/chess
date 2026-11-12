@@ -52,4 +52,10 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> client.logout(user.authToken()));
     }
 
+    @Test
+    void createGameSuccess() throws Exception{
+        var user = client.register("cow", "moo", "cow@byu.edu");
+        int gameID = client.creategame(user.authToken(),"game1");
+        assertTrue(gameID > 0);
+    }
 }

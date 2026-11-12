@@ -25,6 +25,14 @@ public class ServerFacade {
         return handleResponse(response, AuthData.class);
     }
 
+    public int creategame(String authToken, String gameName) throws Exception{
+        var body = new CreateGameRequest(gameName);
+        var request = authTokBuildRequest("POST", "/game", body, authToken);
+        var response = sendRequest(request);
+        var result = handleResponse(response, CreateGameResult.class);
+        return result.gameID();
+    }
+
     public AuthData login(String username, String password) throws ResponseException{
         var body = new LoginRequest(username,password);
         var request = buildRequest("POST", "/session", body);
@@ -97,6 +105,7 @@ public class ServerFacade {
         }
         return null;
     }
+
 
 
 
