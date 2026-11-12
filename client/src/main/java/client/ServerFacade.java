@@ -1,5 +1,6 @@
 package client;
 
+import model.*;
 import exception.ResponseException;
 import com.google.gson.Gson;
 import java.net.*;
@@ -15,6 +16,14 @@ public class ServerFacade {
     public ServerFacade(int port) {
         serverUrl = "http://localhost:" + port;
     }
+
+    public AuthData register(String username, String password, String email) throws ResponseException {
+        var body = new UserData(username, password, email);
+        var request = buildRequest("POST", "/user", body);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
+    }
+
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
