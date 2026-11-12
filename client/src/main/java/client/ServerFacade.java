@@ -32,6 +32,12 @@ public class ServerFacade {
         return handleResponse(response, AuthData.class);
     }
 
+    public void clear() throws ResponseException{
+        var request = buildRequest("DELETE","/db", null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
@@ -71,6 +77,7 @@ public class ServerFacade {
         }
         return null;
     }
+
 
 
     private boolean isSuccessful(int status) {

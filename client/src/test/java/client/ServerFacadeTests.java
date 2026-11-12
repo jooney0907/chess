@@ -41,4 +41,9 @@ public class ServerFacadeTests {
         assertNotNull(result.authToken());
     }
 
+    @Test
+    void clearDatabase() throws Exception{
+        client.clear();
+    }
+
 }
