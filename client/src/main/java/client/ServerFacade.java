@@ -38,6 +38,26 @@ public class ServerFacade {
         handleResponse(response, null);
     }
 
+    public void logout(String authToken)throws ResponseException{
+        var request = authTokBuildRequest("DELETE", "/session", null, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
+    private HttpRequest authTokBuildRequest(String method, String path, Object body, String authToken){
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create(serverUrl + path))
+                .method(method, makeRequestBody(body));
+
+        if (body != null) {
+            request.setHeader("Content-Type", "application/json");
+        }
+        if (authToken != null) {
+            request.setHeader("Authorization", authToken);
+        }
+        return request.build();
+    }
+
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))

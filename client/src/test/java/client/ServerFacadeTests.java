@@ -46,4 +46,10 @@ public class ServerFacadeTests {
         client.clear();
     }
 
+    @Test
+    void logoutSuccess() throws Exception{
+        var user = client.register("cow", "moo", "cow@byu.edu");
+        assertDoesNotThrow(() -> client.logout(user.authToken()));
+    }
+
 }
