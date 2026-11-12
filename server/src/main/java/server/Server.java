@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.sql.SqlDataAccess;
+import model.LoginRequest;
 import service.*;
 import io.javalin.*;
 import io.javalin.http.*;

@@ -31,8 +31,13 @@ public class ServerFacadeTests {
 
     @Test
     void registerSuccess() throws Exception {
-        var result = assertDoesNotThrow(() -> client.register("joe", "password123", "joe@email.com"));
-        assertEquals("joe", result.username());
+        var result = assertDoesNotThrow(() -> client.register("cow", "moo", "cow@byu.edu"));
+        assertEquals("cow", result.username());
+        assertNotNull(result.authToken());
+    }
+    @Test
+    void loginSuccess() throws Exception{
+        var result = assertDoesNotThrow(() -> client.login("cow", "moo"));
         assertNotNull(result.authToken());
     }
 

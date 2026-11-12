@@ -1,5 +1,6 @@
 package client;
 
+
 import model.*;
 import exception.ResponseException;
 import com.google.gson.Gson;
@@ -20,6 +21,13 @@ public class ServerFacade {
     public AuthData register(String username, String password, String email) throws ResponseException {
         var body = new UserData(username, password, email);
         var request = buildRequest("POST", "/user", body);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
+    }
+
+    public AuthData login(String username, String password) throws ResponseException{
+        var body = new LoginRequest(username,password);
+        var request = buildRequest("POST", "/session", body);
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }

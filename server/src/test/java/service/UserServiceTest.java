@@ -1,9 +1,8 @@
 package service;
 
 import dataaccess.*;
+import model.LoginRequest;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
