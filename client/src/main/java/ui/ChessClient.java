@@ -28,6 +28,7 @@ public class ChessClient {
             System.out.println(result);
         }
     }
+
     public String eval(String input) {
         String[] tokens = input.toLowerCase().split(" ");
         String cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -35,7 +36,7 @@ public class ChessClient {
         try {
             return switch (cmd) {
                 case "register" -> register(params);
-                case "login" -> "Login";
+                case "login" -> login(params);
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -63,7 +64,7 @@ public class ChessClient {
                 quit - playing chess
                 help - with possible commands
                 """;
-        }
+            }
         }
 
         private String register(String[] params) throws ResponseException{
@@ -80,4 +81,18 @@ public class ChessClient {
             }
                 return "Please enter username, password, and email";
         }
-}
+
+    private String login(String[] params) throws ResponseException {
+        if (params.length == 2) {
+            String username = params[0];
+            String password = params[1];
+            var result = server.login(username, password);
+            authToken = result.authToken();
+            state = State.SIGNEDIN;
+            return "Successfully logged in as " + result.username();
+        } else if (params.length > 2) {
+            return "Please only enter username and password.";
+        }
+        return "Please enter username and password.";
+    }
+    }
