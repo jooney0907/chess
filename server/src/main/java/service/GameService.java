@@ -53,13 +53,13 @@ public class GameService {
             throw new IllegalArgumentException("400 Error");
         }
         if (request.playerColor().equals("WHITE")) {
-            if (gameData.whiteUsername() != null) {
+            if (gameData.whiteUsername() != null  && !gameData.whiteUsername().equals(authData.username())) {
                 throw new IllegalStateException("403 Error");
             }
             gameData = new GameData(gameData.gameID(), authData.username(),
                     gameData.blackUsername(), gameData.gameName(), gameData.game());
         } else if (request.playerColor().equals("BLACK")) {
-            if (gameData.blackUsername() != null) {
+            if (gameData.blackUsername() != null && !gameData.blackUsername().equals(authData.username())) {
                 throw new IllegalStateException("403 Error");
             }
             gameData = new GameData(gameData.gameID(), gameData.whiteUsername(),

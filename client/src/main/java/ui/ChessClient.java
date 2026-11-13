@@ -45,6 +45,7 @@ public class ChessClient {
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
+                case "leave" -> leaveGame();
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
