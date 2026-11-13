@@ -37,6 +37,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -94,5 +95,14 @@ public class ChessClient {
             return "Please only enter username and password.";
         }
         return "Please enter username and password.";
+    }
+    private String logout() throws ResponseException {
+        if (state == State.SIGNEDOUT) {
+            return "You are not currently logged in.";
+        }
+        server.logout(authToken);
+        authToken = null;
+        state = State.SIGNEDOUT;
+        return "User is logged out.";
     }
     }
