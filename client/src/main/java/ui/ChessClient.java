@@ -2,6 +2,7 @@ package ui;
 
 import java.util.*;
 import client.ServerFacade;
+import exception.ResponseException;
 
 public class ChessClient {
 
@@ -28,17 +29,22 @@ public class ChessClient {
         }
     }
     public String eval(String input) {
-            String[] tokens = input.toLowerCase().split(" ");
-            String cmd = (tokens.length > 0) ? tokens[0] : "help";
-            String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        String[] tokens = input.toLowerCase().split(" ");
+        String cmd = (tokens.length > 0) ? tokens[0] : "help";
+        String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        try {
             return switch (cmd) {
-                case "register" -> "Register";
+                case "register" -> register(params);
                 case "login" -> "Login";
-                case "quit" -> "Quit";
+                case "quit" -> "quit";
                 case "help" -> help();
-                default -> "help";
+                default -> "Unknown command. Type 'help' for available commands.";
             };
+        } catch (ResponseException ex) {
+            return "Unable to complete request. Please check your information and try again.";
+        }
     }
+
     public String help() {
         if (state == State.SIGNEDOUT) {
             return """
@@ -58,5 +64,20 @@ public class ChessClient {
                 help - with possible commands
                 """;
         }
+        }
+
+        private String register(String[] params) throws ResponseException{
+            if (params.length == 3) {
+                String username = params[0];
+                String password = params[1];
+                String email = params[2];
+                var result = server.register(username, password, email);
+                authToken = result.authToken();
+                state = State.SIGNEDIN;
+                return "Successfully registered as " + result.username();
+            } else if(params.length > 3){
+                return "Please only enter username, password, and email.";
+            }
+                return "Please enter username, password, and email";
         }
 }
