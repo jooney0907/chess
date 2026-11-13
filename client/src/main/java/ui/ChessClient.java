@@ -63,7 +63,7 @@ public class ChessClient {
                 quit - playing chess
                 help - with possible commands
                 """;
-        } else {
+        } else if (state == State.SIGNEDIN) {
             return """
                 create <NAME> - a game
                 list - games
@@ -73,10 +73,21 @@ public class ChessClient {
                 quit - playing chess
                 help - with possible commands
                 """;
-            }
+        } else {
+            return """
+                leave - the current game
+                logout - when you are done
+                quit - playing chess
+                help - with possible commands
+                """;
         }
+    }
 
         private String register(String[] params) throws ResponseException{
+            if (state != State.SIGNEDOUT) {
+                return "You are already logged in.";
+            }
+
             if (params.length == 3) {
                 String username = params[0];
                 String password = params[1];
@@ -92,6 +103,9 @@ public class ChessClient {
         }
 
     private String login(String[] params) throws ResponseException {
+        if (state != State.SIGNEDOUT) {
+            return "You are already logged in.";
+        }
         if (params.length == 2) {
             String username = params[0];
             String password = params[1];
