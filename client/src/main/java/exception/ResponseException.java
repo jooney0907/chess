@@ -16,6 +16,10 @@ public class ResponseException extends Exception {
         this.code = code;
     }
 
+    public Code code() {
+        return code;
+    }
+
     public static Code fromHttpStatusCode(int status) {
         return switch (status) {
             case 400 -> Code.ClientError;
