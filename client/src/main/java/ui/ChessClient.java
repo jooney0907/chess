@@ -44,6 +44,7 @@ public class ChessClient {
                 case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -175,6 +176,33 @@ public class ChessClient {
         currentColor = ChessGame.TeamColor.valueOf(color);
         state = State.INGAME;
         return "Successfully joined " + game.gameName() + " as " + color;
+    }
+    private String observeGame(String[] params) throws ResponseException {
+        if (state != State.SIGNEDIN) {
+            return "You need to be logged in to observe";
+        }
+
+        if (params.length < 1) {
+            return "Please enter game number.";
+        }
+        if (params.length > 1) {
+            return "Please only enter one game number.";
+        }
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(params[0]);
+        } catch (NumberFormatException ex) {
+            return "Please enter game number.";
+        }
+        var games = server.listGames(authToken).games();
+        if (gameNumber < 1 || gameNumber > games.size()) {
+            return "Does not exist.";
+        }
+        var game = games.get(gameNumber - 1);
+        currentGameID = game.gameID();
+        currentColor = null;
+        state = State.INGAME;
+        return "Observing " + game.gameName();
     }
 
     }
