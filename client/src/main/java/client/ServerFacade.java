@@ -25,7 +25,7 @@ public class ServerFacade {
         return handleResponse(response, AuthData.class);
     }
 
-    public int creategame(String authToken, String gameName) throws Exception{
+    public int creategame(String authToken, String gameName) throws ResponseException{
         var body = new CreateGameRequest(gameName);
         var request = authTokBuildRequest("POST", "/game", body, authToken);
         var response = sendRequest(request);

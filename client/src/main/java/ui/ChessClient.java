@@ -38,6 +38,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
+                case "create" -> createGame(params);
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -105,4 +106,18 @@ public class ChessClient {
         state = State.SIGNEDOUT;
         return "User is logged out.";
     }
+    private String createGame(String[] params) throws ResponseException {
+        if (state != State.SIGNEDIN) {
+            return "You need to be logged in order to create a game.";
+        }
+        if (params.length == 1) {
+            String gameName = params[0];
+            server.creategame(authToken, gameName);
+            return "New game: " + gameName;
+        } else if (params.length > 1) {
+            return "Please only enter one name";
+        }
+        return "Please enter a name.";
+    }
+
     }
