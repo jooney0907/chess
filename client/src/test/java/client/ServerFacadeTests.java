@@ -23,6 +23,10 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @BeforeEach
+    public void clearDatabase() throws Exception {
+        client.clear();
+    }
 
     @Test
     public void sampleTest() {
@@ -37,13 +41,9 @@ public class ServerFacadeTests {
     }
     @Test
     void loginSuccess() throws Exception{
+        client.register("cow","moo","cow@byu.edu");
         var result = assertDoesNotThrow(() -> client.login("cow", "moo"));
         assertNotNull(result.authToken());
-    }
-
-    @Test
-    void clearDatabase() throws Exception{
-        client.clear();
     }
 
     @Test
