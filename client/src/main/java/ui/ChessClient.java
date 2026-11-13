@@ -1,5 +1,6 @@
 package ui;
 
+import chess.*;
 import java.util.*;
 import client.ServerFacade;
 import exception.ResponseException;
@@ -9,6 +10,8 @@ public class ChessClient {
     private final ServerFacade server;
     private String authToken = null;
     private State state = State.SIGNEDOUT;
+    private int currentGameID;
+    private ChessGame.TeamColor currentColor;
 
     public ChessClient(ServerFacade server) {
         this.server = server;
@@ -40,6 +43,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create" -> createGame(params);
                 case "list" -> listGames();
+                case "join" -> joinGame(params);
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -140,4 +144,37 @@ public class ChessClient {
         }
         return output.toString();
     }
+
+    private String joinGame(String[] params) throws ResponseException {
+        if (state != State.SIGNEDIN) {
+            return "User needs to be logged in";
+        }
+        if (params.length < 2) {
+            return "Please enter game number and desired color.";
+        }
+        if (params.length > 2) {
+            return "Please only enter game number and desired color.";
+        }
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(params[0]);
+        } catch (NumberFormatException ex) {
+            return "Please enter game number.";
+        }
+        String color = params[1].toUpperCase();
+        if (!color.equals("WHITE") && !color.equals("BLACK")) {
+            return "Please choose WHITE or BLACK.";
+        }
+        var games = server.listGames(authToken).games();
+        if (gameNumber < 1 || gameNumber > games.size()) {
+            return "Game does not exist.";
+        }
+        var game = games.get(gameNumber - 1);
+        server.joinGame(authToken, color, game.gameID());
+        currentGameID = game.gameID();
+        currentColor = ChessGame.TeamColor.valueOf(color);
+        state = State.INGAME;
+        return "Successfully joined " + game.gameName() + " as " + color;
+    }
+
     }
