@@ -58,6 +58,13 @@ public class ServerFacade {
         handleResponse(response, null);
     }
 
+    public void joinGame(String authToken, String teamColor, int gameID) throws ResponseException{
+        var body = new JoinGameRequest(teamColor, gameID);
+        var request = authTokBuildRequest("PUT", "/game",body, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
     private HttpRequest authTokBuildRequest(String method, String path, Object body, String authToken){
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))

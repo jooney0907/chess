@@ -66,4 +66,10 @@ public class ServerFacadeTests {
         var result = client.listGames(user.authToken());
         assertEquals(2, result.games().size());
     }
+    @Test
+    void joinGameSuccess() throws Exception {
+        var user = client.register("cow", "moo", "cow@byu.edu");
+        int gameID = client.creategame(user.authToken(), "game1");
+        assertDoesNotThrow(() -> client.joinGame(user.authToken(), "WHITE", gameID));
+    }
 }

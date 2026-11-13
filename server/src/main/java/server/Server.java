@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.sql.SqlDataAccess;
 import model.CreateGameRequest;
+import model.JoinGameRequest;
 import model.LoginRequest;
 import model.LogoutRequest;
 import service.*;
