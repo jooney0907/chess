@@ -50,7 +50,7 @@ public class ChessClient {
                 default -> "Unknown command. Type 'help' for available commands.";
             };
         } catch (ResponseException ex) {
-            return "Unable to complete request. Please check your information and try again.";
+            return "Error: " + ex.getMessage();
         }
     }
 
@@ -139,8 +139,8 @@ public class ChessClient {
         for (var game : games) {
             String white = game.whiteUsername() == null ? "Available" : game.whiteUsername();
             String black = game.blackUsername() == null ? "Available" : game.blackUsername();
-            output.append(number).append(". Game: ").append(game.gameName()).append(" | White: ")
-                    .append(white).append(" | Black: ").append(black).append("\n");
+            output.append(number).append(". Game: ").append(game.gameName()).append(" | WHITE: ")
+                    .append(white).append(" | BLACK: ").append(black).append("\n");
             number++;
         }
         return output.toString();
