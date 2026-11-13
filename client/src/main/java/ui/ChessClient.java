@@ -175,6 +175,10 @@ public class ChessClient {
         currentGameID = game.gameID();
         currentColor = ChessGame.TeamColor.valueOf(color);
         state = State.INGAME;
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        PrintChessBoard printer = new PrintChessBoard(currentColor);
+        printer.print(board);
         return "Successfully joined " + game.gameName() + " as " + color;
     }
     private String observeGame(String[] params) throws ResponseException {
@@ -202,7 +206,20 @@ public class ChessClient {
         currentGameID = game.gameID();
         currentColor = null;
         state = State.INGAME;
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        PrintChessBoard printer = new PrintChessBoard(currentColor);
+        printer.print(board);
         return "Observing " + game.gameName();
+    }
+    private String leaveGame() {
+        if (state != State.INGAME) {
+            return "You are not currently in a game.";
+        }
+        currentGameID = 0;
+        currentColor = null;
+        state = State.SIGNEDIN;
+        return "You have left the game.";
     }
 
     }
