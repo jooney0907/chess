@@ -39,6 +39,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create" -> createGame(params);
+                case "list" -> listGames();
                 case "quit" -> "quit";
                 case "help" -> help();
                 default -> "Unknown command. Type 'help' for available commands.";
@@ -119,5 +120,24 @@ public class ChessClient {
         }
         return "Please enter a name.";
     }
-
+    private String listGames() throws ResponseException {
+        if (state != State.SIGNEDIN) {
+            return "You need to be logged in to list games.";
+        }
+        var result = server.listGames(authToken);
+        var games = result.games();
+        if (games.isEmpty()) {
+            return "No games available.";
+        }
+        StringBuilder output = new StringBuilder();
+        int number = 1;
+        for (var game : games) {
+            String white = game.whiteUsername() == null ? "Available" : game.whiteUsername();
+            String black = game.blackUsername() == null ? "Available" : game.blackUsername();
+            output.append(number).append(". Game: ").append(game.gameName()).append(" | White: ")
+                    .append(white).append(" | Black: ").append(black).append("\n");
+            number++;
+        }
+        return output.toString();
+    }
     }

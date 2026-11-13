@@ -33,7 +33,7 @@ public class ServerFacade {
         return result.gameID();
     }
 
-    public ListGames listGames(String authToken) throws Exception{
+    public ListGames listGames(String authToken) throws ResponseException{
         var request = authTokBuildRequest("GET", "/game", null, authToken);
         var response = sendRequest(request);
         return handleResponse(response, ListGames.class);
