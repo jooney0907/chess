@@ -87,15 +87,21 @@ public class ChessClient {
             if (state != State.SIGNEDOUT) {
                 return "You are already logged in.";
             }
-
             if (params.length == 3) {
                 String username = params[0];
                 String password = params[1];
                 String email = params[2];
-                var result = server.register(username, password, email);
-                authToken = result.authToken();
-                state = State.SIGNEDIN;
-                return "Successfully registered as " + result.username();
+                if(authToken != null){
+                    return "Account already registered.";
+                }
+                try {
+                    var result = server.register(username, password, email);
+                    authToken = result.authToken();
+                    state = State.SIGNEDIN;
+                    return "Successfully registered as " + result.username();
+                } catch (ResponseException e) {
+                    return ("Account already exists");
+                }
             } else if(params.length > 3){
                 return "Please only enter username, password, and email.";
             }
@@ -107,12 +113,16 @@ public class ChessClient {
             return "You are already logged in.";
         }
         if (params.length == 2) {
-            String username = params[0];
-            String password = params[1];
-            var result = server.login(username, password);
-            authToken = result.authToken();
-            state = State.SIGNEDIN;
-            return "Successfully logged in as " + result.username();
+            try {
+                String username = params[0];
+                String password = params[1];
+                var result = server.login(username, password);
+                authToken = result.authToken();
+                state = State.SIGNEDIN;
+                return "Successfully logged in as " + result.username();
+            } catch(ResponseException e){
+                return "Account does not exist.";
+            }
         } else if (params.length > 2) {
             return "Please only enter username and password.";
         }
@@ -185,16 +195,20 @@ public class ChessClient {
         if (gameNumber < 1 || gameNumber > games.size()) {
             return "Game does not exist.";
         }
-        var game = games.get(gameNumber - 1);
-        server.joinGame(authToken, color, game.gameID());
-        currentGameID = game.gameID();
-        currentColor = ChessGame.TeamColor.valueOf(color);
-        state = State.INGAME;
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
-        PrintChessBoard printer = new PrintChessBoard(currentColor);
-        printer.print(board);
-        return "Successfully joined " + game.gameName() + " as " + color;
+        try {
+            var game = games.get(gameNumber - 1);
+            server.joinGame(authToken, color, game.gameID());
+            currentGameID = game.gameID();
+            currentColor = ChessGame.TeamColor.valueOf(color);
+            state = State.INGAME;
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            PrintChessBoard printer = new PrintChessBoard(currentColor);
+            printer.print(board);
+            return "Successfully joined " + game.gameName() + " as " + color;
+        } catch (ResponseException e) {
+            return "Game is full.";
+        }
     }
     private String observeGame(String[] params) throws ResponseException {
         if (state != State.SIGNEDIN) {
